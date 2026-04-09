@@ -3,6 +3,7 @@
 import asyncio
 import hashlib
 import hmac
+import httpx
 import json
 import os
 import threading
@@ -141,13 +142,37 @@ def load_settings() -> Settings:
 
 SETTINGS = load_settings()
 STATE = State(SETTINGS)
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.2.1"
 
 app = FastAPI(
     title="MyTeleBot Mock Target",
     version=APP_VERSION,
     description="Standalone mock target for MyTeleBot target/device/command integration tests.",
 )
+
+
+async def _keep_alive_task(app_url: str):
+    """內部背景邏輯"""
+    await asyncio.sleep(5) # 縮短初始等待為 5 秒
+    async with httpx.AsyncClient(timeout=10) as client:
+        while True:
+            try:
+                # 呼叫公開端點避免 Auth 複雜性
+                resp = await client.get(f"{app_url}/_mock/ping")
+                # 僅輸出至標準輸出，不寫入 STATE.request_log
+                print(f"Self-Awake: Status {resp.status_code}") 
+                await asyncio.sleep(780) # 成功後休眠 13 mins
+            except Exception as e:
+                print(f"Self-Awake Pending (Server not ready or network error): {e}")
+                await asyncio.sleep(5) # 失敗時快速重試
+
+
+@app.on_event("startup")
+async def schedule_tasks():
+    url = os.environ.get("RENDER_EXTERNAL_URL")
+    if url:
+        # 關鍵：不可 await，必須建立獨立 task
+        asyncio.create_task(_keep_alive_task(url))
 
 
 def utc_timestamp() -> str:

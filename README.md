@@ -115,7 +115,7 @@ curl http://127.0.0.1:8000/health
   "ok": true,
   "mock": true,
   "service": "mytelebot-mock-target",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "authType": "none",
   "responseMode": "success",
   "requestLogCount": 0,
@@ -158,7 +158,7 @@ curl http://127.0.0.1:8000/health
   "ok": true,
   "public": true,
   "service": "mytelebot-mock-target",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "timestamp": "2026-04-03T00:00:00Z"
 }
 ```
