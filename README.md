@@ -1,3 +1,12 @@
+---
+name:          "README.md"
+description:   "MyTeleBot Mock Target 專案說明文件"
+created_date:  "2026/04/02 00:00:00"
+modified_date: "2026/06/18 10:00:00"
+project_version: "0.2.1"
+document_version: "1.0.0"
+agent_sign: ['human/mimas', 'gemini cli']
+---
 # MyTeleBot Mock Target
 
 這是一個可獨立拆出的 Python 小專案，用來充當 MyTeleBot 的 `Target`。
